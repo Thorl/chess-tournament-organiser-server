@@ -1,17 +1,11 @@
-
-
 const bcrypt = require("bcryptjs");
 
 const jwt = require("jsonwebtoken");
 
-
-
-const saltRounds = 10;
-
 const Teacher = require("../models/Teacher.model");
 
-
 const postSignup = async (req, res, next) => {
+  const saltRounds = 10;
   try {
     const { email, password } = req.body;
 
@@ -52,7 +46,7 @@ const postSignup = async (req, res, next) => {
 
     const { email: teacherEmail, _id } = createdTeacher;
 
-    const user = { email, _id };
+    const user = { teacherEmail, _id };
 
     res.status(201).json({ user });
   } catch (error) {
@@ -60,4 +54,47 @@ const postSignup = async (req, res, next) => {
   }
 };
 
-module.exports = postSignup;
+const postLogin = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    if (email === "" || password === "") {
+      res.status(400).json({ message: "Provide email and password." });
+      return;
+    }
+
+    const foundTeacher = await Teacher.findOne({ email });
+
+    if (!foundTeacher) {
+      res.status(401).json({ message: "User not found." });
+      return;
+    }
+
+    const passwordCorrect = bcrypt.compareSync(password, foundTeacher.password);
+
+    if (passwordCorrect) {
+      const { _id, email, name } = foundTeacher;
+
+      const payload = { _id, email, name };
+
+      const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+        algorithm: "HS256",
+        expiresIn: "6h",
+      });
+
+      res.status(200).json({ authToken });
+    } else {
+      res.status(401).json({ message: "Unable to authenticate the user" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getVerify = (req, res, next) => {
+  console.log(`req.payload`, req.payload);
+
+  res.status(200).json(req.payload);
+};
+
+module.exports = { postSignup, postLogin, getVerify };
