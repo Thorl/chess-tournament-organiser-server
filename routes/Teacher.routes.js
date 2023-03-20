@@ -1,8 +1,7 @@
 const router = require("express").Router();
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
-const { editAccountDetails } = require("../controllers/Teacher.controller");
+const { postAccountDetails } = require("../controllers/Teacher.controller");
 
-router.get("/edit-details", isAuthenticated, editAccountDetails);
-
+router.get("/account-details", isAuthenticated, postAccountDetails);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const Teacher = require("../models/Teacher.model");
 
-const editAccountDetails = async (req, res, next) => {
+const postAccountDetails = async (req, res, next) => {
   try {
     const currentUser = await Teacher.findById(req.payload._id);
     console.log(currentUser);
@@ -10,4 +10,4 @@ const editAccountDetails = async (req, res, next) => {
   }
 };
 
-module.exports = { editAccountDetails };
+module.exports = { postAccountDetails };
