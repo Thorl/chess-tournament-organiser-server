@@ -41,7 +41,8 @@ const postSignup = async (req, res, next) => {
 
     const createdTeacher = await Teacher.create({
       email,
-      password: hashedPassword,
+      password,
+      hashedPassword,
     });
 
     const { email: teacherEmail, _id } = createdTeacher;
@@ -70,7 +71,10 @@ const postLogin = async (req, res, next) => {
       return;
     }
 
-    const passwordCorrect = bcrypt.compareSync(password, foundTeacher.password);
+    const passwordCorrect = bcrypt.compareSync(
+      password,
+      foundTeacher.hashedPassword
+    );
 
     if (passwordCorrect) {
       const { _id, email, name } = foundTeacher;

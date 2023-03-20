@@ -11,6 +11,9 @@ const teacherSchema = new Schema(
     },
     password: {
       type: String,
+    },
+    hashedPassword: {
+      type: String,
       required: [true, "Password is required."],
     },
     name: {
@@ -18,7 +21,7 @@ const teacherSchema = new Schema(
       required: false,
       trim: true,
       minLength: 2,
-      maxLength: 20,
+      maxLength: 25,
     },
   },
   {

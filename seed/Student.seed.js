@@ -8,8 +8,16 @@ const generateStudent = () => {
     name: faker.name.firstName(),
     pointsData: {
       totalPoints: faker.datatype.number({
+        min: 20,
+        max: 130,
+      }),
+      totalRounds: faker.datatype.number({
         min: 10,
         max: 50,
+      }),
+      totalTournaments: faker.datatype.number({
+        min: 2,
+        max: 20,
       }),
     },
   };
