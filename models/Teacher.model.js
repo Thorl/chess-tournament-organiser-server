@@ -11,6 +11,9 @@ const teacherSchema = new Schema(
     },
     password: {
       type: String,
+      // inclusion of both password and hashedPassword in this model is for dev purposes only.
+      // We can use the Teacher.seed.js file to generate Teacher logins, and since we know the password we can log in to test the app.
+      // When the app gets deployed we will of course remove the password from the Teacher model and only store the hashedPassword
     },
     hashedPassword: {
       type: String,
