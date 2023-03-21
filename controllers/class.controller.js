@@ -1,7 +1,7 @@
 const Class = require("../models/Class.model");
 const Student = require("../models/Student.model");
 
-const postNewClass = async (req, res, next) => {
+const createNewClass = async (req, res, next) => {
   try {
     const { name, school, students } = req.body;
     let studentsArray = [];
@@ -20,4 +20,4 @@ const postNewClass = async (req, res, next) => {
   }
 };
 
-module.exports = { postNewClass };
+module.exports = { createNewClass };
