@@ -9,7 +9,7 @@ const getStudentDetails = async (req, res, next) => {
   }
 };
 
-const postStudentDetails = async (req, res, next) => {
+const updateStudentDetails = async (req, res, next) => {
   try {
     const { studentId: id } = req.params;
     await Student.findByIdAndUpdate(id, req.body);
@@ -29,4 +29,4 @@ const deleteStudent = async (req, res, next) => {
     next(err);
   }
 };
-module.exports = { getStudentDetails, postStudentDetails, deleteStudent };
+module.exports = { getStudentDetails, updateStudentDetails, deleteStudent };

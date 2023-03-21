@@ -12,7 +12,7 @@ const getAccountDetails = async (req, res, next) => {
   }
 };
 
-const postAccountDetails = async (req, res, next) => {
+const updateAccountDetails = async (req, res, next) => {
   try {
     const { _id: id } = req.payload;
     const currentUser = await Teacher.findById(id);
@@ -78,4 +78,4 @@ const deleteAccount = async (req, res, next) => {
   }
 };
 
-module.exports = { getAccountDetails, postAccountDetails, deleteAccount };
+module.exports = { getAccountDetails, updateAccountDetails, deleteAccount };
