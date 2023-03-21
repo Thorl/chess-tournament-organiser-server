@@ -14,7 +14,7 @@ const postNewClass = async (req, res, next) => {
       school,
       students: studentsArray,
     });
-    res.send("class createdddd");
+    res.sendStatus(201)
   } catch (err) {
     next(err);
   }
