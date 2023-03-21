@@ -48,4 +48,16 @@ const getClasses = async (req, res, next) => {
   }
 };
 
-module.exports = { createNewClass, getClasses };
+const getClassDetails = async (req, res, next) => {
+  const { classId } = req.params;
+
+  try {
+    const classDetails = await Class.findById(classId).populate("students");
+
+    res.json(classDetails);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createNewClass, getClasses, getClassDetails };
