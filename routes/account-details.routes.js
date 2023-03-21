@@ -4,7 +4,7 @@ const {
   getAccountDetails,
   postAccountDetails,
   deleteAccount,
-} = require("../controllers/Teacher.controller");
+} = require("../controllers/account-details.controller");
 
 router.get("/account-details", isAuthenticated, getAccountDetails);
 router.post("/account-details", isAuthenticated, postAccountDetails);
