@@ -5,6 +5,7 @@ const classSchema = new Schema(
     students: {
       type: [{ type: Schema.Types.ObjectId, ref: "Student" }],
       default: [],
+      minLength: 5,
     },
     name: {
       type: String,
