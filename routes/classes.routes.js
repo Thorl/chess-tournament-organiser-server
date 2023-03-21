@@ -6,10 +6,10 @@ const {
   getClassDetails,
 } = require("../controllers/classes.controller");
 
-router.post("/new-class", isAuthenticated, createNewClass);
-
 router.get("/", isAuthenticated, getClasses);
 
-router.get("classes/:classId", isAuthenticated, getClassDetails);
+router.post("/new-class", isAuthenticated, createNewClass);
+
+router.get("/:classId", isAuthenticated, getClassDetails);
 
 module.exports = router;
