@@ -26,6 +26,7 @@ const teacherSchema = new Schema(
       minLength: 2,
       maxLength: 25,
     },
+    classes: [{ type: Schema.Types.ObjectId, ref: "Class" }],
   },
   {
     timestamps: true,
