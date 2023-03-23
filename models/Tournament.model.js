@@ -6,7 +6,7 @@ const tournamentSchema = new Schema(
       type: String,
       required: true,
     },
-    class: {
+    _class: {
       type: Schema.Types.ObjectId,
       ref: "Class",
       required: true,
@@ -17,18 +17,19 @@ const tournamentSchema = new Schema(
         points: {
           type: Number,
           required: true,
-          default: 0
+          default: 0,
         },
         numberOfRounds: {
-            type: Number,
-            required: true,
-            default: 0
+          type: Number,
+          required: true,
+          default: 0,
         },
       },
     ],
     status: {
       type: String,
       required: true,
+      default: "ongoing",
     },
     organiser: {
       type: Schema.Types.ObjectId,

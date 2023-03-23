@@ -18,7 +18,7 @@ const createTournament = async (req, res, next) => {
     numberOfRounds,
     organiser,
   });
-  res.send("tournament created");git 
+  res.send("tournament created");
 };
 
 const getTournament = async (req, res, next) => {
