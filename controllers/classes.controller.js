@@ -12,7 +12,7 @@ const createNewClass = async (req, res, next) => {
 
     for (const student of students) {
       const createdStudent = await Student.create({ name: student });
-      studentsArray.push(createdStudent);
+      studentsArray.push(createdStudent_id);
     }
 
     const createdClass = await Class.create({
