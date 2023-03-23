@@ -27,6 +27,7 @@ const teacherSchema = new Schema(
       maxLength: 25,
     },
     classes: [{ type: Schema.Types.ObjectId, ref: "Class" }],
+    tournaments: [{ type: Schema.Types.ObjectId, ref: "Tournament" }],
   },
   {
     timestamps: true,

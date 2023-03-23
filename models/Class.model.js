@@ -14,6 +14,7 @@ const classSchema = new Schema(
     },
     school: {
       type: String,
+      required: true,
     },
   },
   {

@@ -35,12 +35,10 @@ const getClasses = async (req, res, next) => {
   const { _id: teacherId } = req.payload;
 
   try {
-    const teacher = await Teacher.findById(teacherId).populate({
+    const classes = await Teacher.findById(teacherId, "classes").populate({
       path: "classes",
       populate: { path: "students" },
     });
-
-    const classes = teacher.classes;
 
     res.json(classes);
   } catch (error) {
