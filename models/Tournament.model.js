@@ -6,29 +6,34 @@ const tournamentSchema = new Schema(
       type: String,
       required: true,
     },
-    class: {
+    _class: {
       type: Schema.Types.ObjectId,
       ref: "Class",
       required: true,
     },
-    participantsData: [
-      {
-        participantID: { type: Schema.Types.ObjectId, ref: "Student" },
-        points: {
-          type: Number,
-          required: true,
-          default: 0
-        },
-        numberOfRounds: {
+    participantsData: {
+      type: [
+        {
+          participantID: { type: Schema.Types.ObjectId, ref: "Student" },
+          points: {
             type: Number,
             required: true,
-            default: 0
+            default: 0,
+          },
+          numberOfRoundsCompleted: {
+            type: Number,
+            required: true,
+            default: 0,
+          },
         },
-      },
-    ],
+      ],
+      validate: [arrayLimit, "A tournament must have at least 5 participants"],
+    },
+
     status: {
       type: String,
       required: true,
+      default: "ongoing",
     },
     organiser: {
       type: Schema.Types.ObjectId,
@@ -46,6 +51,10 @@ const tournamentSchema = new Schema(
     timestamps: true,
   }
 );
+
+function arrayLimit(val) {
+  return val.length >= 5;
+}
 
 const Tournament = model("Tournament", tournamentSchema);
 
