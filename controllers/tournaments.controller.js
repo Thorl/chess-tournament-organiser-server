@@ -1,12 +1,13 @@
-const id = require("faker/lib/locales/id_ID");
+// const id = require("faker/lib/locales/id_ID");
 const Tournament = require("../models/Tournament.model");
 
 const createTournament = async (req, res, next) => {
   const { name, _class, students, numberOfRounds } = req.body;
-  let participantsData = [];
 
-  for (x of students) {
-    participantsData.push({ participantID: x });
+  const participantsData = [];
+
+  for (const studentId of students) {
+    participantsData.push({ participantID: studentId });
   }
 
   const { _id: organiser } = req.payload;
@@ -18,13 +19,14 @@ const createTournament = async (req, res, next) => {
     numberOfRounds,
     organiser,
   });
-  res.send("tournament created");
+  res.sendStatus(201);
 };
 
-const getTournament = async (req, res, next) => {
+const getTournamentDetails = async (req, res, next) => {
   try {
-    const { tournamentId: id } = req.params;
-    const individualTournament = await Tournament.findById(id)
+    const { tournamentId } = req.params;
+
+    const individualTournament = await Tournament.findById(tournamentId)
       .populate("_class")
       .populate("participantsData.participantID");
     res.json({ individualTournament });
@@ -33,4 +35,4 @@ const getTournament = async (req, res, next) => {
   }
 };
 
-module.exports = { createTournament, getTournament };
+module.exports = { createTournament, getTournamentDetails };

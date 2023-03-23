@@ -2,10 +2,10 @@ const router = require("express").Router();
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 const {
   createTournament,
-  getTournament,
-} = require("../controllers/tournament.controller");
+  getTournamentDetails,
+} = require("../controllers/tournaments.controller");
 
 router.post("/new-tournament", isAuthenticated, createTournament);
 
-router.get("/:tournamentId", isAuthenticated, getTournament);
+router.get("/:tournamentId", isAuthenticated, getTournamentDetails);
 module.exports = router;
