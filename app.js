@@ -24,11 +24,16 @@ app.use("/auth", authRoutes);
 const accountdetailsRoutes = require("./routes/account-details.routes");
 app.use("/", accountdetailsRoutes);
 
-const studentRoutes = require("./routes/Student.routes");
+const studentRoutes = require("./routes/student.routes");
 app.use("/students", studentRoutes);
 
 const classRoutes = require("./routes/classes.routes");
 app.use("/classes", classRoutes);
+
+const tournamentRoutes = require("./routes/tournament.routes");
+app.use("/tournaments", tournamentRoutes);
+
+
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
