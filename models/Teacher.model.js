@@ -19,7 +19,14 @@ const teacherSchema = new Schema(
       type: String,
       required: [true, "Password is required."],
     },
-    name: {
+    firstName: {
+      type: String,
+      required: false,
+      trim: true,
+      minLength: 2,
+      maxLength: 25,
+    },
+    lastName: {
       type: String,
       required: false,
       trim: true,

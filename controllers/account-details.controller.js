@@ -3,10 +3,13 @@ const bcrypt = require("bcryptjs");
 const saltRounds = 10;
 
 const getAccountDetails = async (req, res, next) => {
+  const { _id: teacherId } = req.payload;
   try {
-    const currentUser = await Teacher.findById(req.payload._id);
-    console.log(currentUser);
-    res.json({ name: currentUser.name });
+    const { firstName, lastName } = await Teacher.findById(
+      teacherId,
+      "firstName lastName"
+    );
+    res.json({ firstName, lastName });
   } catch (err) {
     next(err);
   }
