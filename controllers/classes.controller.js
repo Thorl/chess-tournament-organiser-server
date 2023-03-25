@@ -8,6 +8,23 @@ const createNewClass = async (req, res, next) => {
   try {
     const { name, school, students } = req.body;
 
+    if (students.length === 0) {
+      res.json({
+        errorMessage: "Please add at least one student to the class!",
+      });
+      return;
+    }
+
+    if (!name?.trim()) {
+      res.json({ errorMessage: "Please enter a class name!" });
+      return;
+    }
+
+    if (!school?.trim()) {
+      res.json({ errorMessage: "Please enter a school name!" });
+      return;
+    }
+
     const studentsArray = [];
 
     for (const student of students) {
