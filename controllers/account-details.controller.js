@@ -1,12 +1,14 @@
 const Teacher = require("../models/Teacher.model");
 const bcrypt = require("bcryptjs");
-const saltRounds = 10;
 
 const getAccountDetails = async (req, res, next) => {
+  const { _id: teacherId } = req.payload;
   try {
-    const currentUser = await Teacher.findById(req.payload._id);
-    console.log(currentUser);
-    res.json({ name: currentUser.name });
+    const { firstName, lastName, email } = await Teacher.findById(
+      teacherId,
+      "firstName lastName email"
+    );
+    res.json({ firstName, lastName, email });
   } catch (err) {
     next(err);
   }
@@ -14,55 +16,84 @@ const getAccountDetails = async (req, res, next) => {
 
 const updateAccountDetails = async (req, res, next) => {
   try {
-    const { _id: id } = req.payload;
-    const currentUser = await Teacher.findById(id);
-    const { hashedPassword } = currentUser;
+    const { _id: teacherId } = req.payload;
+
+    const { hashedPassword: currentHashedPassword } = await Teacher.findById(
+      teacherId
+    );
+
     const {
       email,
-      name,
+      firstName,
+      lastName,
       currentPassword,
-      newPasswordFirst,
-      newPasswordSecond,
+      newPassword,
+      repeatedNewPassword,
     } = req.body;
 
-    //if user wants to change email and/or name, but not their password
-
-    if (!currentPassword && !newPasswordFirst && !newPasswordSecond) {
-      await Teacher.findByIdAndUpdate(req.payload._id, { email, name });
-      const updatedTeacher = await Teacher.findById(id); // so that updated document gets returned
-      console.log(updatedTeacher);
-      res.json({ updatedTeacher });
-    } else {
-      // if user wants to change their password
-      if (!bcrypt.compareSync(currentPassword, hashedPassword)) {
-        res.send("incorrect password");
-      }
-
-      if (newPasswordFirst !== newPasswordSecond) {
-        res.send("passwords must match");
-      }
-
-      if (currentPassword === newPasswordFirst) {
-        res.send("new and existing passwords must be different");
-      }
-
+    const isNewPasswordValid = (newPassword) => {
       const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-      if (!regex.test(newPasswordFirst)) {
-        res.send(
-          "Password not long enough. Must contain at least one uppercase letter"
-        );
+
+      return regex.test(newPassword);
+    };
+
+    const isNewEmailValid = (newEmail) => {
+      const regex = /^\S+@\S+\.\S+$/;
+
+      return regex.test(newEmail);
+    };
+
+    if (!isNewEmailValid) {
+      res.json({ errorMessage: "Please enter a valid email address!" });
+      return;
+    }
+
+    if (!currentPassword && !newPassword && !repeatedNewPassword) {
+      const updatedTeacher = await Teacher.findByIdAndUpdate(
+        teacherId,
+        { email, firstName, lastName },
+        { new: true }
+      );
+
+      res.json(updatedTeacher);
+    } else {
+      if (!bcrypt.compareSync(currentPassword, currentHashedPassword)) {
+        res.json({ errorMessage: "Incorrect password!" });
+        return;
       }
+
+      if (newPassword !== repeatedNewPassword) {
+        res.json({ errorMessage: "The new passwords must match!" });
+        return;
+      }
+
+      if (currentPassword === newPassword) {
+        res.json({
+          errorMessage: "The new and existing passwords must be different!",
+        });
+      }
+
+      if (!isNewPasswordValid(newPassword)) {
+        res.json({
+          errorMessage:
+            "Invalid password! The password must be at least 6 characters long, and contain at least one number, one uppercase and one lowercase character.",
+        });
+        return;
+      }
+      const saltRounds = 10;
       const salt = await bcrypt.genSalt(saltRounds);
-      const newHashedPassword = await bcrypt.hash(newPasswordFirst, salt);
-      await Teacher.findByIdAndUpdate(id, {
-        name,
-        email,
-        password: newPasswordFirst,
-        hashedPassword: newHashedPassword,
-      });
-      const updatedTeacher = await Teacher.findById(id);
-      console.log(updatedTeacher);
-      res.json({ updatedTeacher });
+      const newHashedPassword = await bcrypt.hash(newPassword, salt);
+      const updatedTeacher = await Teacher.findByIdAndUpdate(
+        teacherId,
+        {
+          firstName,
+          lastName,
+          email,
+          hashedPassword: newHashedPassword,
+        },
+        { new: true }
+      );
+      res.json(updatedTeacher);
     }
   } catch (err) {
     next(err);

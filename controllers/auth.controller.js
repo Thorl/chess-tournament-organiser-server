@@ -71,13 +71,6 @@ const postLogin = async (req, res, next) => {
       return;
     }
 
-    console.log("Password", password);
-
-    console.log(
-      "foundTeacher's hashed password: ",
-      foundTeacher.hashedPassword
-    );
-
     const passwordCorrect = bcrypt.compareSync(
       password,
       foundTeacher.hashedPassword
