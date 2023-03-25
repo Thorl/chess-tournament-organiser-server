@@ -69,7 +69,7 @@ const updateAccountDetails = async (req, res, next) => {
 
       if (currentPassword === newPassword) {
         res.json({
-          errorMessage: "Th new and existing passwords must be different!",
+          errorMessage: "The new and existing passwords must be different!",
         });
       }
 
