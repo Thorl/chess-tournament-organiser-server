@@ -51,8 +51,19 @@ const updateAccountDetails = async (req, res, next) => {
     if (!currentPassword && !newPassword && !repeatedNewPassword) {
       const updatedTeacher = await Teacher.findByIdAndUpdate(
         teacherId,
-        { email, firstName, lastName },
-        { new: true }
+        {
+          email,
+          firstName,
+          lastName,
+        },
+        {
+          new: true,
+          projection: {
+            email: 1,
+            firstName: 1,
+            lastName: 1,
+          },
+        }
       );
 
       res.json(updatedTeacher);
@@ -91,8 +102,16 @@ const updateAccountDetails = async (req, res, next) => {
           email,
           hashedPassword: newHashedPassword,
         },
-        { new: true }
+        {
+          new: true,
+          projection: {
+            email: 1,
+            firstName: 1,
+            lastName: 1,
+          },
+        }
       );
+
       res.json(updatedTeacher);
     }
   } catch (err) {
