@@ -43,7 +43,7 @@ const updateAccountDetails = async (req, res, next) => {
       return regex.test(newEmail);
     };
 
-    if (!isNewEmailValid) {
+    if (!isNewEmailValid(email)) {
       res.json({ errorMessage: "Please enter a valid email address!" });
       return;
     }
