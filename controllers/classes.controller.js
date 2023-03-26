@@ -25,6 +25,39 @@ const createNewClass = async (req, res, next) => {
       return;
     }
 
+    const checkIfClassIsinDb = async () => {
+      try {
+        const teacher = await Teacher.findById(teacherId).populate("classes");
+
+        const classesArray = teacher.classes;
+
+        console.log("Classes array: ", classesArray);
+
+        const isClassInDb = classesArray.some((classObj) => {
+          return classObj.name === name && classObj.school === school;
+        });
+
+        console.log("Is class in db: ", isClassInDb);
+
+        return isClassInDb;
+      } catch (error) {
+        console.log(
+          "An error occured while searching if the class already exists: ",
+          error
+        );
+      }
+    };
+
+    const doesClassExist = await checkIfClassIsinDb();
+
+    if (doesClassExist) {
+      res.json({
+        errorMessage:
+          "The class you're trying to create already exists! If you would like to edit the class, please select it from your list of classes.",
+      });
+      return;
+    }
+
     const studentsArray = [];
 
     for (const student of students) {
