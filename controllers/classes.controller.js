@@ -108,4 +108,58 @@ const getClassDetails = async (req, res, next) => {
   }
 };
 
-module.exports = { createNewClass, getClasses, getClassDetails };
+const editStudentDetails = async (req, res, next) => {
+  const {
+    studentId,
+    name: updatedName,
+    totalPoints: updatedTotalPoints,
+  } = req.body;
+
+  try {
+    const updatedStudent = await Student.findByIdAndUpdate(
+      studentId,
+      { name: updatedName, pointsData: { totalPoints: updatedTotalPoints } },
+      { new: true }
+    );
+
+    res.json(updatedStudent);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteStudent = async (req, res, next) => {
+  const { studentId } = req.body;
+
+  try {
+    await Student.findByIdAndRemove(studentId);
+
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const addStudent = async (req, res, next) => {
+  const { name, classId } = req.body;
+  try {
+    const createdStudent = await Student.create({ name });
+
+    await Class.findByIdAndUpdate(classId, {
+      $push: { students: createdStudent },
+    });
+
+    res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createNewClass,
+  getClasses,
+  getClassDetails,
+  editStudentDetails,
+  deleteStudent,
+  addStudent,
+};
