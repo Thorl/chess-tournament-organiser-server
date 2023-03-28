@@ -16,6 +16,11 @@ const classSchema = new Schema(
       type: String,
       required: true,
     },
+    teacher: {
+      type: Schema.Types.ObjectId,
+      ref: "Teacher",
+      required: true,
+    },
   },
   {
     timestamps: true,
