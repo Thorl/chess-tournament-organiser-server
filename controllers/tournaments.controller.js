@@ -4,7 +4,30 @@ const Teacher = require("../models/Teacher.model");
 
 const createTournament = async (req, res, next) => {
   try {
-    const { name, _class, students, numberOfRounds } = req.body;
+    let { name, _class, school, students, numberOfRounds } = req.body;
+
+    if (typeof name !== "string") {
+      name = name.toString();
+    }
+
+    if (typeof numberOfRounds !== "number") {
+      numberOfRounds = +numberOfRounds;
+    }
+
+    if (
+      !name.trim() ||
+      !_class?.trim() ||
+      !school?.trim() ||
+      !students.length ||
+      students.length % 2 ||
+      !numberOfRounds
+    ) {
+      res.json({
+        errorMessage:
+          "The tournament must have a name, class, school, an even number of students, and at least one round!",
+      });
+      return;
+    }
 
     const participantsData = [];
 
@@ -17,6 +40,7 @@ const createTournament = async (req, res, next) => {
     const createdTournament = await Tournament.create({
       name,
       _class,
+      school,
       participantsData,
       numberOfRounds,
       organiser,
@@ -26,7 +50,7 @@ const createTournament = async (req, res, next) => {
       $push: { tournaments: createdTournament },
     });
 
-    res.sendStatus(201);
+    res.json({ tournamentId: createdTournament._id });
   } catch (error) {
     next(error);
   }

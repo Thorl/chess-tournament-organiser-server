@@ -11,6 +11,10 @@ const tournamentSchema = new Schema(
       ref: "Class",
       required: true,
     },
+    school: {
+      type: String,
+      required: true,
+    },
     participantsData: [
       {
         participantID: { type: Schema.Types.ObjectId, ref: "Student" },
