@@ -57,7 +57,7 @@ const getTournamentDetails = async (req, res, next) => {
     const tournament = await Tournament.findById(tournamentId)
       .populate("_class")
       .populate("participantsData.participantID");
-
+    console.log(tournament);
     res.json(tournament);
   } catch (err) {
     next(err);
