@@ -65,7 +65,7 @@ const getTournamentDetails = async (req, res, next) => {
 };
 
 const generateTournamentPairings = async (req, res, next) => {
-  const { participantsData, roundNumber } = req.body;
+  const { participantsData, roundNumber, startTournament } = req.body;
 
   try {
     const studentsSortedByPoints = [...participantsData].sort(
@@ -90,6 +90,10 @@ const generateTournamentPairings = async (req, res, next) => {
       },
       "roundPairings"
     );
+
+    if (startTournament) {
+      result.status = "active";
+    }
 
     const roundPairings = result.roundPairings;
 

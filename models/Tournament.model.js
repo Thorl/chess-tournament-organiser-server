@@ -53,7 +53,8 @@ const tournamentSchema = new Schema(
     status: {
       type: String,
       required: true,
-      default: "ongoing",
+      enum: ["inactive", "active", "finished"],
+      default: "inactive",
     },
     organiser: {
       type: Schema.Types.ObjectId,
