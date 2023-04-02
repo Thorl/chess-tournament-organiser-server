@@ -5,6 +5,7 @@ const {
   getTournamentDetails,
   getTournaments,
   generateTournamentPairings,
+  updateScore,
 } = require("../controllers/tournaments.controller");
 
 router.get("/", isAuthenticated, getTournaments);
@@ -18,5 +19,7 @@ router.post(
   isAuthenticated,
   generateTournamentPairings
 );
+
+router.post("/:tournamentId/score", isAuthenticated, updateScore);
 
 module.exports = router;
