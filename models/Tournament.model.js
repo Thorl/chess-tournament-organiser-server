@@ -32,7 +32,6 @@ const tournamentSchema = new Schema(
           player1: {
             id: { type: Schema.Types.ObjectId, ref: "Student" },
             name: String,
-            points: { type: Number, default: 0 },
             result: {
               type: String,
               enum: ["win", "lose", "draw", ""],
@@ -42,7 +41,6 @@ const tournamentSchema = new Schema(
           player2: {
             id: { type: Schema.Types.ObjectId, ref: "Student" },
             name: String,
-            points: { type: Number, default: 0 },
             result: {
               type: String,
               enum: ["win", "lose", "draw", ""],
