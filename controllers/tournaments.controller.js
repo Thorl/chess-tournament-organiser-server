@@ -20,13 +20,14 @@ const createTournament = async (req, res, next) => {
       participantsData,
       numberOfRounds,
       organiser,
+      roundPairings: {},
     });
 
     await Teacher.findByIdAndUpdate(organiser, {
       $push: { tournaments: createdTournament },
     });
 
-    res.sendStatus(201);
+    res.json({ tournamentId: createdTournament._id });
   } catch (error) {
     next(error);
   }
@@ -57,7 +58,6 @@ const getTournamentDetails = async (req, res, next) => {
     const tournament = await Tournament.findById(tournamentId)
       .populate("_class")
       .populate("participantsData.student");
-    console.log(tournament);
     res.json(tournament);
   } catch (err) {
     next(err);
@@ -66,6 +66,8 @@ const getTournamentDetails = async (req, res, next) => {
 
 const generateTournamentPairings = async (req, res, next) => {
   const { participantsData, roundNumber, startTournament } = req.body;
+
+  console.log("ParticipantsData: ", participantsData);
 
   try {
     const studentsSortedByPoints = [...participantsData].sort(
@@ -87,8 +89,8 @@ const generateTournamentPairings = async (req, res, next) => {
       {
         organiser: teacherId,
         _id: tournamentId,
-      },
-      "roundPairings"
+      }
+      // "roundPairings"
     );
 
     if (startTournament) {
@@ -97,7 +99,7 @@ const generateTournamentPairings = async (req, res, next) => {
 
     const roundPairings = result.roundPairings;
 
-    roundPairings[`round${roundNumber}`] = [];
+    const createdRound = [];
 
     for (let i = 0; i < studentsSortedByPoints.length; i += 2) {
       const pair = studentsSortedByPoints.slice(i, i + 2);
@@ -120,8 +122,10 @@ const generateTournamentPairings = async (req, res, next) => {
         result: "",
       };
 
-      roundPairings[`round${roundNumber}`].push({ player1, player2 });
+      createdRound.push({ player1, player2 });
     }
+
+    roundPairings.set(`round${roundNumber}`, createdRound);
 
     await result.save();
 
@@ -138,17 +142,19 @@ const updateScore = async (req, res, next) => {
   const round = "round" + roundNumber;
 
   try {
-    const result = await Tournament.findOne({
+    const tournament = await Tournament.findOne({
       organiser: teacherId,
       _id: tournamentId,
     }).populate("participantsData.student");
 
-    const roundPairings = result.roundPairings;
+    const roundPairings = tournament.roundPairings;
 
-    const participantsData = result.participantsData;
+    console.log("Tournament: ", tournament);
+
+    const participantsData = tournament.participantsData;
 
     if (!winningPlayerId) {
-      for (const pair of roundPairings[round]) {
+      for (const pair of roundPairings.get(round)) {
         let playerOne = pair.player1;
         let playerTwo = pair.player2;
 
@@ -161,12 +167,14 @@ const updateScore = async (req, res, next) => {
         ) {
           playerOne.result = "draw";
           playerTwo.result = "draw";
-
+          const updatedResults = roundPairings.get(`round${roundNumber}`);
+          roundPairings.set(`round${roundNumber}`, []);
+          roundPairings.set(`round${roundNumber}`, updatedResults);
           break;
         }
       }
     } else {
-      for (const pair of roundPairings[round]) {
+      for (const pair of roundPairings.get(round)) {
         let playerOne = pair.player1;
         let playerTwo = pair.player2;
 
@@ -189,7 +197,9 @@ const updateScore = async (req, res, next) => {
           }
 
           playerTwo.result = "lose";
-
+          const updatedResults = roundPairings.get(`round${roundNumber}`);
+          roundPairings.set(`round${roundNumber}`, []);
+          roundPairings.set(`round${roundNumber}`, updatedResults);
           break;
         } else if (playerTwoId === winningPlayerId) {
           playerTwo.result = "win";
@@ -208,12 +218,15 @@ const updateScore = async (req, res, next) => {
 
           playerOne.result = "lose";
 
+          const updatedResults = roundPairings.get(`round${roundNumber}`);
+          roundPairings.set(`round${roundNumber}`, []);
+          roundPairings.set(`round${roundNumber}`, updatedResults);
           break;
         }
       }
     }
 
-    await result.save();
+    await tournament.save();
 
     res.json(roundPairings);
   } catch (error) {

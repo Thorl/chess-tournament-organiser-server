@@ -26,7 +26,8 @@ const tournamentSchema = new Schema(
         },
       },
     ],
-    roundPairings: {
+    roundPairings: { type: Map, of: Object },
+    /*  {
       round1: [
         {
           player1: {
@@ -49,7 +50,7 @@ const tournamentSchema = new Schema(
           },
         },
       ],
-    },
+    } */
     status: {
       type: String,
       required: true,
