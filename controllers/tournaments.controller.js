@@ -85,13 +85,10 @@ const generateTournamentPairings = async (req, res, next) => {
     const { _id: teacherId } = req.payload;
     const { tournamentId } = req.params;
 
-    const result = await Tournament.findOne(
-      {
-        organiser: teacherId,
-        _id: tournamentId,
-      }
-      // "roundPairings"
-    );
+    const result = await Tournament.findOne({
+      organiser: teacherId,
+      _id: tournamentId,
+    });
 
     if (startTournament) {
       result.status = "active";
@@ -234,10 +231,34 @@ const updateScore = async (req, res, next) => {
   }
 };
 
+const updateStatus = async (req, res, next) => {
+  const { tournamentId } = req.params;
+  const { newStatus } = req.body;
+
+  console.log("tournamentId: ", tournamentId);
+
+  try {
+    const tournament = await Tournament.findByIdAndUpdate(
+      tournamentId,
+      {
+        status: newStatus,
+      },
+      { new: true }
+    );
+
+    console.log("tournament: ", tournament);
+
+    res.json(tournament);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createTournament,
   getTournamentDetails,
   getTournaments,
   generateTournamentPairings,
   updateScore,
+  updateStatus,
 };
