@@ -17,7 +17,7 @@ const tournamentSchema = new Schema(
     },
     participantsData: [
       {
-        participantID: { type: Schema.Types.ObjectId, ref: "Student" },
+        student: { type: Schema.Types.ObjectId, ref: "Student" },
         points: {
           type: Number,
           required: true,
@@ -30,10 +30,36 @@ const tournamentSchema = new Schema(
         },
       },
     ],
+    roundPairings: { type: Map, of: Object },
+    /*  {
+      round1: [
+        {
+          player1: {
+            id: { type: Schema.Types.ObjectId, ref: "Student" },
+            name: String,
+            result: {
+              type: String,
+              enum: ["win", "lose", "draw", ""],
+              default: "",
+            },
+          },
+          player2: {
+            id: { type: Schema.Types.ObjectId, ref: "Student" },
+            name: String,
+            result: {
+              type: String,
+              enum: ["win", "lose", "draw", ""],
+              default: "",
+            },
+          },
+        },
+      ],
+    } */
     status: {
       type: String,
       required: true,
-      default: "ongoing",
+      enum: ["inactive", "active", "finished"],
+      default: "inactive",
     },
     organiser: {
       type: Schema.Types.ObjectId,
