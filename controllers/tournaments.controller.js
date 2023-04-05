@@ -134,13 +134,13 @@ const generateTournamentPairings = async (req, res, next) => {
       const player1 = {
         id: playerOneId,
         name: playerOneName,
-        result: "",
+        points: null,
       };
 
       const player2 = {
         id: playerTwoId,
         name: playerTwoName,
-        result: "",
+        points: null,
       };
 
       createdRound.push({ player1, player2 });
@@ -186,11 +186,31 @@ const updateScore = async (req, res, next) => {
           currentPlayerOneId === playerOneId &&
           currentPlayerTwoId === playerTwoId
         ) {
-          playerOne.result = "draw";
-          playerTwo.result = "draw";
+          playerOne.points = 1;
+          playerTwo.points = 1;
           const updatedResults = roundPairings.get(`round${roundNumber}`);
           roundPairings.set(`round${roundNumber}`, []);
           roundPairings.set(`round${roundNumber}`, updatedResults);
+
+          await Student.findByIdAndUpdate(playerOneId, {
+            $inc: { "pointsData.totalPoints": 1, "pointsData.totalRounds": 1 },
+          });
+
+          await Student.findByIdAndUpdate(playerTwoId, {
+            $inc: { "pointsData.totalPoints": 1, "pointsData.totalRounds": 1 },
+          });
+
+          for (const participant of participantsData) {
+            const participantId = participant.student._id.toString();
+
+            if (participantId === playerOneId) {
+              participant.points += 1;
+            }
+
+            if (participantId === playerTwoId) {
+              participant.points += 1;
+            }
+          }
           break;
         }
       }
@@ -203,7 +223,7 @@ const updateScore = async (req, res, next) => {
         const playerTwoId = pair.player2.id.toString();
 
         if (playerOneId === winningPlayerId) {
-          playerOne.result = "win";
+          playerOne.points = 3;
 
           await Student.findByIdAndUpdate(winningPlayerId, {
             $inc: { "pointsData.totalPoints": 3, "pointsData.totalRounds": 1 },
@@ -217,13 +237,13 @@ const updateScore = async (req, res, next) => {
             }
           }
 
-          playerTwo.result = "lose";
+          playerTwo.points = 0;
           const updatedResults = roundPairings.get(`round${roundNumber}`);
           roundPairings.set(`round${roundNumber}`, []);
           roundPairings.set(`round${roundNumber}`, updatedResults);
           break;
         } else if (playerTwoId === winningPlayerId) {
-          playerTwo.result = "win";
+          playerTwo.points = 3;
 
           await Student.findByIdAndUpdate(winningPlayerId, {
             $inc: { "pointsData.totalPoints": 3, "pointsData.totalRounds": 1 },
@@ -237,7 +257,7 @@ const updateScore = async (req, res, next) => {
             }
           }
 
-          playerOne.result = "lose";
+          playerOne.points = 0;
 
           const updatedResults = roundPairings.get(`round${roundNumber}`);
           roundPairings.set(`round${roundNumber}`, []);
