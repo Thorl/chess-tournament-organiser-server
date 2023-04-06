@@ -69,6 +69,7 @@ const createNewClass = async (req, res, next) => {
       name,
       school,
       students: studentsArray,
+      teacher: teacherId,
     });
 
     await Teacher.findByIdAndUpdate(teacherId, {
