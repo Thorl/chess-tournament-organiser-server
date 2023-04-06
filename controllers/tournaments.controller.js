@@ -16,7 +16,7 @@ const createTournament = async (req, res, next) => {
 
     if (
       !name.trim() ||
-      !_class?.trim() ||
+      !_class ||
       !school?.trim() ||
       !students.length ||
       students.length % 2 ||
@@ -90,8 +90,6 @@ const getTournamentDetails = async (req, res, next) => {
 
 const generateTournamentPairings = async (req, res, next) => {
   const { participantsData, roundNumber, startTournament } = req.body;
-
-  console.log("ParticipantsData: ", participantsData);
 
   try {
     const studentsSortedByPoints = [...participantsData].sort(
@@ -169,8 +167,6 @@ const updateScore = async (req, res, next) => {
     }).populate("participantsData.student");
 
     const roundPairings = tournament.roundPairings;
-
-    console.log("Tournament: ", tournament);
 
     const participantsData = tournament.participantsData;
 
@@ -279,8 +275,6 @@ const updateStatus = async (req, res, next) => {
   const { tournamentId } = req.params;
   const { newStatus } = req.body;
 
-  console.log("tournamentId: ", tournamentId);
-
   try {
     const tournament = await Tournament.findByIdAndUpdate(
       tournamentId,
@@ -289,8 +283,6 @@ const updateStatus = async (req, res, next) => {
       },
       { new: true }
     );
-
-    console.log("tournament: ", tournament);
 
     res.json(tournament);
   } catch (error) {
